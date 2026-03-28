@@ -1,0 +1,25 @@
+services:
+  # 1. The Database
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  # 2. Your App
+  app:
+    build: .
+    container_name: product-app
+    ports:
+      - "8080:7070"
+    environment:
+      # Now the app looks for "db" (the name above), not localhost!
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/product_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      - db
